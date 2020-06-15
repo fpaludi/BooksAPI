@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %} Filter Books {% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Search for a book</h1>
+</div>
+
+<div class="col-md-8">
+    {{ wtf.quick_form(form) }}
+
+    {%if books%}
+    <h3>Search results:</h3>
+    <ul>
+        {% for book in books %}
+        <li>
+            <a href="{{url_for('app.show_book', book_id=book.id)}}">
+                {{book.title}}, {{book.author}}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+{% endblock %}
