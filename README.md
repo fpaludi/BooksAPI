@@ -1,9 +1,7 @@
-# Project 1
-
-Web Programming with Python
+# Book App
+It is a book reviews app based.
 
 # Create Virtual Env
-poetry install
+poetry install  
+
 poetry update
-
-
