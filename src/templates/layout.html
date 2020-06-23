@@ -1,8 +1,19 @@
 {% extends "bootstrap/base.html" %}
 {% block title %} Books {% endblock %}
 
-
-
+{% block navbar %}
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-header"> Books App</a>
+    <div class="nav navbar-nav navbar-right">
+        {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('app.logout') }}">Log Out</a></li>
+        {% else %}
+        <li><a href="{{ url_for('app.sign_in') }}">Sign In</a></li>
+        <li><a href="{{ url_for('app.index') }}">Log In</a></li>
+        {% endif %}
+    </div>
+</nav>
+{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -19,4 +30,3 @@
     {% block page_content %}{% endblock %}
 </div>
 {% endblock %}
-

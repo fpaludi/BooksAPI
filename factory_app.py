@@ -15,6 +15,10 @@ class Config:
     if not SQLALCHEMY_DATABASE_URI:
         raise RuntimeError("DATABASE_URL is not set")
 
+    GOODREAD_API_KEY = os.getenv("GOODREAD_API_KEY")
+    if not GOODREAD_API_KEY:
+        raise RuntimeError("GOODREAD_API_KEY is not set")
+
     @staticmethod
     def init_app(app):
         pass
