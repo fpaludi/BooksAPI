@@ -11,6 +11,7 @@ from flask import (
 from flask_login import current_user, login_required, login_user, logout_user
 from .forms import FilterBookForm, BookReviewForm, LogInForm, SignInForm
 from . import services
+from .authentication import auth
 
 control = Blueprint("app", __name__, template_folder="templates")
 
@@ -79,6 +80,7 @@ def show_book(book_id):
 
 
 @control.route("/api/<string:isbn>")
+@auth.login_required
 def get_goodread_data(isbn):
     goodread_results = services.get_json_from_goodreads(isbn)
     return jsonify(goodread_results), 200

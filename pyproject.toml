@@ -18,7 +18,7 @@ Flask-Bootstrap = "^3.3.7"
 pandas = "^1.0.4"
 requests = "^2.23.0"
 Flask-Login = "^0.5.0"
-
+Flask-HTTPAuth = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4"
