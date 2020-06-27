@@ -2,8 +2,8 @@ import os
 from flask import current_app as app
 from flask import jsonify, g
 from flask_httpauth import HTTPBasicAuth
-from .models.users import Users
-from . import db
+from .adapters.repository import Repository
+from . import get_session
 
 auth = HTTPBasicAuth()
 
@@ -13,9 +13,11 @@ def api_verify_password(username, password):
     HttpAuth callback function. Is is used to verify the password
     for an API call
     """
+    session = get_session()
+    repo = Repository(session)
     if username == "":
         return False
-    user = Users.query.filter_by(username=username).first()
+    user = repo.get_username(username)
     if not user:
         return False
     g.current_user = user

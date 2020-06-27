@@ -1,6 +1,10 @@
 import os
 from flask import Flask
-from src import login_manager, db, bootstrap
+from src import login_manager, bootstrap
+# from src import db
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import sessionmaker
+# from src.adapters import orm
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -13,7 +17,7 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     if not SQLALCHEMY_DATABASE_URI:
-        raise RuntimeError("DATABASE_URL is not set")
+        raise RuntimeError("SQLALCHEMY_DATABASE_URI is not set")
 
     GOODREAD_API_KEY = os.getenv("GOODREAD_API_KEY")
     if not GOODREAD_API_KEY:
@@ -46,7 +50,7 @@ def create_app(config_name):
 
     app = Flask(__name__)
     app.config.from_object(config[config_name])
-    db.init_app(app)
+    # db.init_app(app)
     bootstrap.init_app(app)
     login_manager.init_app(app)
     
@@ -55,3 +59,10 @@ def create_app(config_name):
     app.register_blueprint(control)
 
     return app
+
+
+# def create_db(app):
+#     orm.start_mappers()
+#     engine = create_engine(app.config["DATABASE_URL"])
+#     get_session = sessionmaker(bind=engine)
+#     return get_session

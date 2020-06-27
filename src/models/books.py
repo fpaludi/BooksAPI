@@ -1,18 +1,15 @@
-from flask import Flask
 import numpy as np
 from .reviews import Reviews
-from .. import login_manager, db
 
-
-class Books(db.Model):
-    __tablename__ = "books"
-    id = db.Column(db.Integer, primary_key=True)
-    isbn = db.Column(db.String, nullable=False)
-    title = db.Column(db.String, nullable=False)
-    author = db.Column(db.String, nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    # Relationships
-    reviews = db.relationship("Reviews", backref="books", lazy=True)
+class Books():
+    def __init__(self, isbn, title, author, year):
+        self.isbn = isbn
+        self.title = title
+        self.author = author
+        self.year = year
+        # Relationships
+        self.reviews = []
+        # reviews = db.relationship("Reviews", backref="books", lazy=True)
 
     def get_review_average(self):
         if self.get_review_count() == 0:
