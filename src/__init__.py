@@ -2,7 +2,8 @@ import os
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask import current_app
-# from flask_sqlalchemy import SQLAlchemy
+
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from src.adapters import orm

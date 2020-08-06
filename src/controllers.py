@@ -10,27 +10,33 @@ from flask import (
     current_app
 )
 from flask_login import current_user, login_required, login_user, logout_user
-from . import login_manager 
 from .forms import FilterBookForm, BookReviewForm, LogInForm, SignInForm
 from .authentication import auth
 from .adapters.repository import Repository 
+from .logger import get_logger
+from . import login_manager
 from . import services
 from . import get_session
 
 control = Blueprint("app", __name__, template_folder="templates")
-
+logger = get_logger(__name__)
 
 @control.route("/", methods=["GET", "POST"])
 def index():
+    logger.info("Start index")
     session = get_session()
     repo = Repository(session)
 
     form = LogInForm()
     if form.validate_on_submit():
-        msg, st = services.login(form.username.data, form.password.data, repo)
+        msg, st, user = services.login(form.username.data, form.password.data, repo)
         flash(msg)
         if st:
+            login_user(user, True)
+            logger.info("logged in, redirecdting to search book")
             return redirect(url_for("app.search_book"))
+
+    logger.info("rendering log in form")
     return render_template("forms.html", form=form, title_msg="Log In")
 
 
@@ -59,6 +65,7 @@ def logout():
 @control.route("/book/search", methods=["GET", "POST"])
 @login_required
 def search_book():
+    logger.info("Start search book")
     session = get_session()
     repo = Repository(session)
 
@@ -68,6 +75,8 @@ def search_book():
         filter_sel = form.filter_sel.data
         filter_value = form.string.data
         books = services.get_books_by(filter_sel, filter_value, repo)
+        logger.info("looking for a book")
+
     return render_template("filter_book.html", form=form, books=books)
 
 

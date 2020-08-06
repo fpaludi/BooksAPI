@@ -1,7 +1,6 @@
 import os
 import requests
 from flask import current_app as app
-from flask_login import login_user
 from .models.books import Books
 from .models.users import Users
 from .models.reviews import Reviews
@@ -21,18 +20,20 @@ def login(username, password, repo):
     user = repo.get_username(username)
     #Users.query.filter_by(username=username).first()
     if user is not None and user.validate_pass(password):
-        login_user(user, True)
-        return "Logged in successfully", True
-    return "Username or password incorrect. Please try again", False
+        return "Logged in successfully", True, user
+    return "Username or password incorrect. Please try again", False, None
+
+
+def add_new_user(username, password, repo):
+    user = Users(username=username, password=password)
+    repo.add_user(user)
 
 
 def signin(username, password, password2, repo, session):
     if password == password2:
         user = repo.get_username(username)
         if not user:
-            user = Users(username=username, password=password)
-            #db.session.add(user)
-            repo.add_user(user)
+            add_new_user(username, password, repo)
             session.commit()
             return "User signed up", True
         return "Username already exists, pick up another.", False

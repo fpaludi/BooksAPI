@@ -1,11 +1,12 @@
 import os
-from flask import current_app as app
+from flask import current_app
 from flask import jsonify, g
 from flask_httpauth import HTTPBasicAuth
 from .adapters.repository import Repository
 from . import get_session
 
 auth = HTTPBasicAuth()
+#get_session = create_db(current_app)
 
 @auth.verify_password
 def api_verify_password(username, password):

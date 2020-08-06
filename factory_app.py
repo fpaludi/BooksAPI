@@ -1,11 +1,7 @@
 import os
 from flask import Flask
 from src import login_manager, bootstrap
-# from src import db
-# from sqlalchemy import create_engine
-# from sqlalchemy.orm import sessionmaker
-# from src.adapters import orm
-
+    
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -59,10 +55,3 @@ def create_app(config_name):
     app.register_blueprint(control)
 
     return app
-
-
-# def create_db(app):
-#     orm.start_mappers()
-#     engine = create_engine(app.config["DATABASE_URL"])
-#     get_session = sessionmaker(bind=engine)
-#     return get_session
