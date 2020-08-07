@@ -15,12 +15,9 @@ login_manager = LoginManager()
 login_manager.login_view = "app.index"
 auth = HTTPBasicAuth()
 
-# Create Blueprints
-control = Blueprint("app", __name__, template_folder="templates")
-
 # Register Extensions and Blueprints
 bootstrap.init_app(app)
 login_manager.init_app(app)
 
-# Register Blueprints
+from src.controllers import control
 app.register_blueprint(control)

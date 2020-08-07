@@ -9,4 +9,5 @@ class Settings:
     DATABASE_URL = os.environ.get("DATABASE_URL")
     GOODREAD_API_KEY = os.environ.get("GOODREAD_API_KEY")
     GOODREAD_API_URL = os.environ.get("GOODREAD_API_URL")
-    
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+

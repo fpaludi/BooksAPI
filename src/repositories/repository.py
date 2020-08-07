@@ -14,7 +14,7 @@ class Repository:
         return self._session.query(Users).filter_by(username=username).first()
 
     def add_user(self, user):
-        new_user = User(**user)
+        new_user = Users(**user)
         self._session.add(new_user)
         self._session.commit()
 

@@ -1,4 +1,5 @@
 from flask import (
+    Blueprint,
     render_template,
     url_for,
     redirect,
@@ -6,12 +7,16 @@ from flask import (
     flash,
 )
 from flask_login import current_user, login_required, login_user, logout_user
-from src.app import login_manager, auth, control
+from src.app import login_manager, auth
 from src.forms.forms import FilterBookForm, BookReviewForm, LogInForm, SignInForm
 from src.repositories import RepositoryContainer
 from src.services import ServicesContainer
 from src.services.logger import get_logger
 
+# Create Blueprints
+control = Blueprint("app", __name__, template_folder="templates")
+
+# Create Blueprints
 logger = get_logger(__name__)
 
 @control.route("/", methods=["GET", "POST"])
