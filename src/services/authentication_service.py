@@ -1,8 +1,8 @@
 import os
 from flask import current_app
 from flask import jsonify, g
-from src import auth
-from src.models.users import Users
+from src.app import auth
+#from src.models.users import Users
 
 class AuthenticationService:
     def __init__(self, repository):
@@ -16,7 +16,7 @@ class AuthenticationService:
         return "Username or password incorrect. Please try again", False, None
 
     def add_new_user(self, username, password):
-        user = Users(username=username, password=password)
+        user = dict(username=username, password=password)
         self._repository.add_user(user)
 
     def signin(self, username, password, password2):

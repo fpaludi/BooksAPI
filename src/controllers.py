@@ -98,7 +98,6 @@ def get_goodread_data(isbn):
     goodread_results = services.get_json_from_goodreads(isbn)
     return jsonify(goodread_results), 200
 
-
 @login_manager.user_loader
 def load_user(user_id):
     repo = RepositoryContainer.repository()

@@ -14,8 +14,10 @@ class Repository:
         return self._session.query(Users).filter_by(username=username).first()
 
     def add_user(self, user):
-        self._session.add(user)
-    
+        new_user = User(**user)
+        self._session.add(new_user)
+        self._session.commit()
+
     def get_user_id(self, id_ref):
         return self._session.query(Users).get(id_ref)        
 
@@ -38,5 +40,6 @@ class Repository:
     # Reviews Table
     # --------------------------------
     def add_review(self, review):
-        self._session.add(review)
+        new_review = Reviews(**review)
+        self._session.add(new_review)
         self._session.commit()

@@ -1,6 +1,6 @@
-from src.models.books import Books
-from src.models.users import Users
-from src.models.reviews import Reviews
+#from src.models.books import Books
+#from src.models.users import Users
+#from src.models.reviews import Reviews
 
 class BookServices:
     def __init__(self, repository):
@@ -22,12 +22,19 @@ class BookServices:
 
     def insert_book_review(self, book, user, review_value, review_comment):
         if book.user_can_insert_review(user.id):
-            new_review = Reviews(
+            new_review = dict(
                 review_value=review_value,
                 review_comment=review_comment,
                 user_id=user.id,
                 book_id=book.id,
             )
+
+            # new_review = Reviews(
+            #     review_value=review_value,
+            #     review_comment=review_comment,
+            #     user_id=user.id,
+            #     book_id=book.id,
+            # )
             # db.session.add(new_review)
             self._repository.add_review(new_review)
             return "Review Inserted", True
