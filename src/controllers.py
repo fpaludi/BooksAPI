@@ -1,35 +1,27 @@
 from flask import (
-    Flask,
-    session,
-    Blueprint,
     render_template,
     url_for,
     redirect,
     jsonify,
     flash,
-    current_app
 )
 from flask_login import current_user, login_required, login_user, logout_user
-from .forms import FilterBookForm, BookReviewForm, LogInForm, SignInForm
-from .authentication import auth
-from .adapters.repository import Repository 
-from .logger import get_logger
-from . import login_manager
-from . import services
-from . import get_session
+from src.app import login_manager, auth, control
+from src.forms.forms import FilterBookForm, BookReviewForm, LogInForm, SignInForm
+from src.repositories import RepositoryContainer
+from src.services import ServicesContainer
+from src.services.logger import get_logger
 
-control = Blueprint("app", __name__, template_folder="templates")
 logger = get_logger(__name__)
 
 @control.route("/", methods=["GET", "POST"])
 def index():
-    logger.info("Start index")
-    session = get_session()
-    repo = Repository(session)
-
+    auth_service = ServicesContainer.auth_service()
     form = LogInForm()
+
+    logger.info("Start index")
     if form.validate_on_submit():
-        msg, st, user = services.login(form.username.data, form.password.data, repo)
+        msg, st, user = auth_service.login(form.username.data, form.password.data)
         flash(msg)
         if st:
             login_user(user, True)
@@ -42,12 +34,11 @@ def index():
 
 @control.route("/sign_in", methods=["GET", "POST"])
 def sign_in():
-    session = get_session()
-    repo = Repository(session)
-
+    auth_service = ServicesContainer.auth_service()
     form = SignInForm()
+
     if form.validate_on_submit():
-        msg, st = services.signin(form.username.data, form.password.data, form.password2.data, repo, session)
+        msg, st = auth_service.signin(form.username.data, form.password.data, form.password2.data)
         flash(msg)
         if st:
             return redirect(url_for("app.index"))
@@ -66,15 +57,14 @@ def logout():
 @login_required
 def search_book():
     logger.info("Start search book")
-    session = get_session()
-    repo = Repository(session)
+    book_service = ServicesContainer.book_service()
 
     form = FilterBookForm()
     books = []
     if form.validate_on_submit():
         filter_sel = form.filter_sel.data
         filter_value = form.string.data
-        books = services.get_books_by(filter_sel, filter_value, repo)
+        books = book_service.get_books_by(filter_sel, filter_value)
         logger.info("looking for a book")
 
     return render_template("filter_book.html", form=form, books=books)
@@ -83,20 +73,18 @@ def search_book():
 @control.route("/book/<int:book_id>", methods=["GET", "POST"])
 @login_required
 def show_book(book_id):
-    session = get_session()
-    repo = Repository(session)
+    book_service = ServicesContainer.book_service()
+    api_service = ServicesContainer.api_service()
 
     form = BookReviewForm()
-    book = services.get_books_by_id(book_id, repo)
-    goodread_results = services.get_json_from_goodreads(book.isbn)
+    book = book_service.get_books_by_id(book_id)
+    goodread_results = api_service.get_json_from_goodreads(book.isbn)
     goodread_rating = goodread_results["books"][0]["average_rating"]
     
     if form.validate_on_submit():
         user_id = current_user.id
-        msg, st = services.insert_book_review(
-            book, current_user, form.review_value.data, "",
-            repo, session
-        )
+        msg, st = book_service.insert_book_review(
+            book, current_user, form.review_value.data, "",)
         flash(msg)
 
     return render_template(
@@ -113,6 +101,5 @@ def get_goodread_data(isbn):
 
 @login_manager.user_loader
 def load_user(user_id):
-    session = get_session()
-    repo = Repository(session)
+    repo = RepositoryContainer.repository()
     return repo.get_user_id(int(user_id))

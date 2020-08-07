@@ -3,12 +3,11 @@ from sqlalchemy import (
     ForeignKey, Text, Boolean
 )
 from sqlalchemy.orm import mapper, relationship
-from ..models.books import Books
-from ..models.users import Users
-from ..models.reviews import Reviews
+from src.models.books import Books
+from src.models.users import Users
+from src.models.reviews import Reviews
 
 metadata = MetaData()
-
 
 books = Table(
     'books', metadata,
@@ -37,7 +36,6 @@ reviews = Table(
     Column("user_id", Integer, ForeignKey("users.id"), nullable=False),
     Column("book_id", Integer, ForeignKey("books.id"), nullable=False),
 )
-
 
 def start_mappers():
     users_mapper = mapper(Users, users)
