@@ -11,6 +11,3 @@ class ServicesContainer(containers.DeclarativeContainer):
     auth_service = providers.Factory(AuthenticationService, RepositoryContainer.repository)
 
     api_service  = providers.Factory(ExternalApiService, Settings.GOODREAD_API_URL, Settings.GOODREAD_API_KEY)
-
-
-
