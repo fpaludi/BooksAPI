@@ -26,10 +26,17 @@ python-dotenv = "^0.14"
 pytest = "^6.0"
 pytest-cov = "^2.10"
 mock = "^4.0"
-flake8 = "^3.7"
 black = "^19.10b0"
 mypy = "^0.761"
 flakehell = "^0.3.3"
+flake8 = "^3.7"
+flake8-blind-except = "*"
+flake8-builtins = "*"
+flake8-logging-format = "*"
+flake8-comprehensions = "*"
+flake8-fixme = "*"
+flake8-pytest = "*"
+flake8-mock = "*"
 
 [tool.black]
 line-length = 90
@@ -40,14 +47,19 @@ target-version = ['py37']
 format = "grouped"
 # show line of source code in output
 show_source = true
-application-import-names = "app"
+statistics = false
+application-import-names = "main"
+max_complexity = 6
 
 [tool.flakehell.plugins]
-# include everything in pyflakes except E501
-pyflakes = ["+*", "-E501"]
 flake8-blind-except = ["+*"]
 flake8-builtins = ["+*"]
 flake8-logging-format = ["+*"]
+flake8-comprehensions = ["+*"]
+flake8-fixme = ["+*"]
+flake8-pytest = ["+*"]
+flake8-mock = ["+*"]
+pyflakes = ["+*", "-E501"] # include everything in pyflakes except E501
 mccabe = ["+*"]
 pycodestyle = ["+*"]
 

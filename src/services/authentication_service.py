@@ -1,5 +1,7 @@
 from flask import g, jsonify
-from src.app import auth
+from flask_httpauth import HTTPBasicAuth
+
+auth = HTTPBasicAuth()
 
 
 class AuthenticationService:

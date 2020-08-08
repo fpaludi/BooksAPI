@@ -22,5 +22,5 @@ class Books:
         return len(self.reviews)
 
     def user_can_insert_review(self, user_id):
-        result = user_id in [r.user_id for r in self.reviews]
+        result = user_id in (r.user_id for r in self.reviews)
         return not result
