@@ -1,7 +1,8 @@
 from sqlalchemy import inspect
 from src.models.books import Books
-from src.models.users import Users
 from src.models.reviews import Reviews
+from src.models.users import Users
+
 
 class Repository:
     def __init__(self, session):
@@ -19,7 +20,7 @@ class Repository:
         self._session.commit()
 
     def get_user_id(self, id_ref):
-        return self._session.query(Users).get(id_ref)        
+        return self._session.query(Users).get(id_ref)
 
     # --------------------------------
     # Books Table
@@ -27,9 +28,10 @@ class Repository:
     def get_book_by_like(self, column_name, value):
         insp = inspect(Books)
         return (
-            self._session.query(Books)
-            .filter(insp.all_orm_descriptors[column_name].like(f"%{value}%"))
-            #.filter(Books.__table__.columns[column_name].like(f"%{value}%"))
+            self._session.query(Books).filter(
+                insp.all_orm_descriptors[column_name].like(f"%{value}%")
+            )
+            # .filter(Books.__table__.columns[column_name].like(f"%{value}%"))
             .all()
         )
 

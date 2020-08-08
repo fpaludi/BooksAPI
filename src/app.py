@@ -1,9 +1,9 @@
-from flask import Flask, Blueprint
-from flask_login import LoginManager
+from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask import current_app
 from flask_httpauth import HTTPBasicAuth
+from flask_login import LoginManager
 from settings import Settings
+from src.controllers import control
 
 # Create app and
 app = Flask(__name__)
@@ -19,5 +19,5 @@ auth = HTTPBasicAuth()
 bootstrap.init_app(app)
 login_manager.init_app(app)
 
-from src.controllers import control
+
 app.register_blueprint(control)

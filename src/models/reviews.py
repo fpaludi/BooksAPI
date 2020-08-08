@@ -1,4 +1,4 @@
-class Reviews():
+class Reviews:
     def __init__(self, review_value, review_comment, user_id, book_id):
         self.review_value = review_value
         self.review_comment = review_comment

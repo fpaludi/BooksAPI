@@ -1,5 +1,5 @@
-import os
 import requests
+
 
 class ExternalApiService:
     def __init__(self, api_url, api_key):

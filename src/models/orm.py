@@ -1,16 +1,24 @@
 from sqlalchemy import (
-    Table, MetaData, Column, Integer, String, Date,
-    ForeignKey, Text, Boolean
+    Boolean,
+    Column,
+    # Date,
+    ForeignKey,
+    Integer,
+    MetaData,
+    String,
+    Table,
+    Text,
 )
 from sqlalchemy.orm import mapper, relationship
 from src.models.books import Books
-from src.models.users import Users
 from src.models.reviews import Reviews
+from src.models.users import Users
 
 metadata = MetaData()
 
 books = Table(
-    'books', metadata,
+    "books",
+    metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("isbn", String, nullable=False),
     Column("title", String, nullable=False),
@@ -20,7 +28,8 @@ books = Table(
 
 
 users = Table(
-    'users', metadata,
+    "users",
+    metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("username", String, nullable=False, unique=True),
     Column("password_hash", String, nullable=False),
@@ -29,7 +38,8 @@ users = Table(
 
 
 reviews = Table(
-    'reviews', metadata,
+    "reviews",
+    metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("review_value", Integer, nullable=False),
     Column("review_comment", Text),
@@ -37,16 +47,16 @@ reviews = Table(
     Column("book_id", Integer, ForeignKey("books.id"), nullable=False),
 )
 
+
 def start_mappers():
-    users_mapper = mapper(Users, users)
+    mapper(Users, users)
     reviews_mapper = mapper(Reviews, reviews)
-    books_mapper = mapper(Books, books, properties={
-        'reviews': relationship(
-            reviews_mapper,
-            backref="books",
-            collection_class=list,
-        )
-    })
-
-
-
+    mapper(
+        Books,
+        books,
+        properties={
+            "reviews": relationship(
+                reviews_mapper, backref="books", collection_class=list,
+            )
+        },
+    )

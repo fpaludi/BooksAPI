@@ -1,14 +1,15 @@
 import numpy as np
 from src.models.reviews import Reviews
 
-class Books():
+
+class Books:
     def __init__(self, isbn, title, author, year):
         self.isbn = isbn
         self.title = title
         self.author = author
         self.year = year
         # Relationships
-        self.reviews : List[Reviews] = [] 
+        self.reviews: list[Reviews] = []
         # reviews = db.relationship("Reviews", backref="books", lazy=True)
 
     def get_review_average(self):

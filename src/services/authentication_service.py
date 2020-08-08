@@ -1,8 +1,6 @@
-import os
-from flask import current_app
-from flask import jsonify, g
+from flask import g, jsonify
 from src.app import auth
-#from src.models.users import Users
+
 
 class AuthenticationService:
     def __init__(self, repository):
@@ -10,7 +8,7 @@ class AuthenticationService:
 
     def login(self, username, password):
         user = self._repository.get_username(username)
-        #Users.query.filter_by(username=username).first()
+        # Users.query.filter_by(username=username).first()
         if user is not None and user.validate_pass(password):
             return "Logged in successfully", True, user
         return "Username or password incorrect. Please try again", False, None
@@ -28,7 +26,7 @@ class AuthenticationService:
             return "Username already exists, pick up another.", False
         return "Passwords are not equal. Try again", False
 
-    @auth.verify_password
+    @auth.verify_password  # type: ignore
     def api_verify_password(self, username, password):
         """
         HttpAuth callback function. Is is used to verify the password
@@ -42,6 +40,6 @@ class AuthenticationService:
         g.current_user = user
         return user.validate_pass(password)
 
-    @auth.error_handler
+    @auth.error_handler  # type: ignore
     def auth_error(self):
         return jsonify({"msg": "Invalid Credentials"}), 401

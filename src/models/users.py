@@ -1,6 +1,7 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
-class Users():
+
+class Users:
     def __init__(self, username, password):
         self.username = username
         self.password = password
@@ -19,14 +20,15 @@ class Users():
     @property
     def is_anonymous(self):
         return False
-    
+
     def get_id(self):
         return self.id
+
     # --------------------------------------------
-    
+
     @property
     def password(self):
-        raise AttributeError('password is not a readable attribute')
+        raise AttributeError("password is not a readable attribute")
 
     @password.setter
     def password(self, password):
@@ -34,4 +36,3 @@ class Users():
 
     def validate_pass(self, password):
         return check_password_hash(self.password_hash, password)
-
