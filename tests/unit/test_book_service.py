@@ -14,4 +14,4 @@ class TestBookService(BaseTestService):
         response = book_service.get_books_by_id(1234)
 
         # Assertions
-        assert response == mock_result
+        assert response == 1
