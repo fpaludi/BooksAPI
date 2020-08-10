@@ -8,5 +8,4 @@ __pycache__
 .env
 set_env_vars.sh
 *credentials.txt*
-
-
+htmlcov

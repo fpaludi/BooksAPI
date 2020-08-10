@@ -1,29 +1,51 @@
+import contextlib
 import pandas as pd
+from sqlalchemy.exc import ArgumentError
+from settings import update_settings
+from src.models.orm import metadata, start_mappers
 from src.models.books import Books
-from src.repositories import RepositoryContainer
 
+#
 # from src.models.reviews import Reviews
 # from src.models.users import Users
 
 
-def main():
+def create_tables(engine, session):
     print("Creating Tables...")
-    db = RepositoryContainer.engine()
-    db.create_all()
+    try:
+        start_mappers()
+    except ArgumentError:
+        pass
+    metadata.create_all(engine)
 
     # Add books info
     books_df = pd.read_csv("src/data/books.csv")
+    print("Saving books...")
     for idx, row in books_df.iterrows():
         book = Books(
             isbn=row["isbn"], title=row["title"], author=row["author"], year=row["year"]
         )
-        print(idx, row)
-        db.session.add(book)
+        session.add(book)
 
     # Commit Changes
     print("Commiting changes...")
-    db.session.commit()
+    session.commit()
+
+
+def delete_tables(engine, session):
+    print("Removing Tables...")
+    with contextlib.closing(engine.connect()) as con:
+        trans = con.begin()
+        for table in reversed(metadata.sorted_tables):
+            con.execute(table.delete())
+        trans.commit()
 
 
 if __name__ == "__main__":
-    main()
+    update_settings("default")
+    from src.repositories import RepositoryContainer
+
+    engine = RepositoryContainer.engine()
+    session = RepositoryContainer.session()
+
+    create_tables(engine, session)

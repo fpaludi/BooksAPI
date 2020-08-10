@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from flask_httpauth import HTTPBasicAuth
-from src.app import login_manager
+from src import login_manager
 from src.forms.forms import BookReviewForm, FilterBookForm, LogInForm, SignInForm
 from src.repositories import RepositoryContainer
 from src.services import ServicesContainer

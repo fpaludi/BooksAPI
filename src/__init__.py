@@ -1,3 +1,6 @@
-from src.models import orm
+from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
 
-orm.start_mappers()
+bootstrap = Bootstrap()
+login_manager = LoginManager()
+login_manager.login_view = "app.index"
