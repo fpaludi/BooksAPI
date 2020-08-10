@@ -5,10 +5,6 @@ from settings import update_settings
 from src.models.orm import metadata, start_mappers
 from src.models.books import Books
 
-#
-# from src.models.reviews import Reviews
-# from src.models.users import Users
-
 
 def create_tables(engine, session):
     print("Creating Tables...")
@@ -33,7 +29,7 @@ def create_tables(engine, session):
 
 
 def delete_tables(engine, session):
-    print("Removing Tables...")
+    print("\nRemoving Tables...\n")
     with contextlib.closing(engine.connect()) as con:
         trans = con.begin()
         for table in reversed(metadata.sorted_tables):

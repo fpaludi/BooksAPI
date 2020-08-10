@@ -12,6 +12,7 @@ class Settings:  # i.e. Production
     GOODREAD_API_KEY = os.environ.get("GOODREAD_API_KEY")
     GOODREAD_API_URL = os.environ.get("GOODREAD_API_URL")
     SECRET_KEY = os.environ.get("SECRET_KEY")
+    WTF_CSRF_ENABLED = True
 
 
 class ProdSettings:
@@ -25,6 +26,7 @@ class DevSettings:
 class TestSettings:
     TESTING = True
     DATABASE_URL = os.environ.get("DATABASE_TEST_URL")
+    WTF_CSRF_ENABLED = False
 
 
 def update_settings(config_name="default"):
@@ -41,7 +43,6 @@ def update_settings(config_name="default"):
 
 
 def create_app(config_name="default"):
-    print("CREATING APP")
     from src import login_manager, bootstrap
     from src.models import orm
 
@@ -54,7 +55,6 @@ def create_app(config_name="default"):
     login_manager.init_app(app)
 
     # Register blueprint
-    print("IMPORTING CONTROLLERS...")
     from src.controllers import control  # noqa
 
     app.register_blueprint(control)
