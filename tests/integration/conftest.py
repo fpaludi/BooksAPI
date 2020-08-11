@@ -1,20 +1,23 @@
 import pytest
 from abc import ABC
-from settings import create_app
+from settings import create_app, update_settings
 from create_tables import create_tables, delete_tables
 from tests.integration.fake_mock_data import DBTestingData
 
+CONF_NAME = "testing"
+
 
 def pytest_configure():
-    pass
+    print("INITIAL Test configuration")
+    print("Upload Setting object for testing pourposes")
+    update_settings(CONF_NAME)
 
 
 class BaseTestControllers(ABC):
     @pytest.fixture(scope="class")
     def client(self):
-        # Create Env Variables
-        conf_name = "testing"
-        app = create_app(conf_name)
+        # Create App Object
+        app = create_app(CONF_NAME)
 
         # Create DB for testing
         self.create_testing_database()
@@ -38,6 +41,11 @@ class BaseTestControllers(ABC):
 
         engine = RepositoryContainer.engine()
         session = RepositoryContainer.session()
+        if "_test" not in str(engine.url):
+            print("Tests are running over production or development database")
+            print(f"Database url: {engine.url}")
+            raise (ValueError)
+
         create_tables(engine, session)
 
         repository = RepositoryContainer.repository()
@@ -67,8 +75,8 @@ class BaseTestControllers(ABC):
     # @classmethod
     # def setup_class(cls):
     #    # Create Env Variables and App
-    #    conf_name = "testing"
-    #    app = create_app(conf_name)
+    #    CONF_NAME = "testing"
+    #    app = create_app(CONF_NAME)
     #    # Create DB for testing
     #    create_tables()
 

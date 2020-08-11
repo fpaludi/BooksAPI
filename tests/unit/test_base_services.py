@@ -5,8 +5,6 @@ from src.services.book_service import BookServices
 from src.services.external_api_service import ExternalApiService
 from src.repositories.repository import Repository
 
-# from src.services.authentication_service import AuthenticationService
-
 
 class BaseTestService(ABC):
     def teardown_method(self):

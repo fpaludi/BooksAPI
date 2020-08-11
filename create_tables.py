@@ -7,7 +7,7 @@ from src.models.books import Books
 
 
 def create_tables(engine, session):
-    print("Creating Tables...")
+    print(f"\nCreating Tables in {engine.url}\n")
     try:
         start_mappers()
     except ArgumentError:

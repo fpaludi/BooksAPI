@@ -17,7 +17,17 @@ class TestControllers(BaseTestControllers):
         assert response.status_code == 200
         assert b"<title> Log In </title>" in response.data
 
-    def test_index_post_registered_user(self, client):
+    def test_index_post_registered_user_wrong_password(self, client):
+        response = client.post(
+            "/",
+            data={"username": DBTestingData.TEST_USER, "password": "...",},
+            content_type="multipart/form-data",
+            follow_redirects=True,
+        )
+        assert response.status_code == 200
+        assert b"<title> Log In </title>" in response.data
+
+    def test_index_post_registered_user_bad_password(self, client):
         response = client.post(
             "/",
             data={

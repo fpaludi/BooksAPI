@@ -61,7 +61,7 @@ flake8-pytest = ["+*"]
 flake8-mock = ["+*"]
 pyflakes = ["+*", "-E501"] # include everything in pyflakes except E501
 mccabe = ["+*"]
-pycodestyle = ["+*"]
+pycodestyle = ["+*", "-E231"]
 
 [build-system]
 requires = ["poetry>=0.12"]
