@@ -7,7 +7,7 @@ class TestBookService(BaseTestService):
 
         # Mock internal service
         mock_result = [{"Book": "1234"}]
-        repository = book_service.get_repository_mock()
+        repository = book_service.uow.get_repository_mock()
         repository.get_book_id.return_value = mock_result
 
         # Method under test
@@ -21,7 +21,7 @@ class TestBookService(BaseTestService):
 
         # Mock internal service
         mock_result = [{"Book": "1234"}]
-        repository = book_service.get_repository_mock()
+        repository = book_service.uow.get_repository_mock()
         repository.get_book_id.return_value = mock_result
 
         # Method under test

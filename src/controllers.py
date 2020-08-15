@@ -105,5 +105,6 @@ def get_goodread_data(isbn):
 
 @login_manager.user_loader  # type: ignore
 def load_user(user_id):
-    repo = RepositoryContainer.repository()
-    return repo.get_user_id(int(user_id))
+    uow = RepositoryContainer.uow()
+    with uow:
+        return uow.repository.get_user_id(int(user_id))

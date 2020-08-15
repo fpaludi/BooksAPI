@@ -40,7 +40,7 @@ class TestControllers(BaseTestControllers):
         assert response.status_code == 200
         assert b"<title> Filter Books </title>" in response.data
 
-    def test_sign_in_new_user_post(self, client, repository):
+    def test_sign_in_new_user_post(self, client, unit_of_work):
         # Unregistered user
         response = client.post(
             "/sign_in",
@@ -53,13 +53,14 @@ class TestControllers(BaseTestControllers):
             content_type="multipart/form-data",
             follow_redirects=True,
         )
-        user = repository.get_username("new_user")
+        with unit_of_work as uow:
+            user = uow.repository.get_username("new_user")
         assert response.status_code == 200  # redirect code
         assert b"<title> Log In </title>" in response.data
         assert user is not None
         assert user.username == "new_user"
 
-    def test_sign_in_registered_user_post(self, client, repository):
+    def test_sign_in_registered_user_post(self, client, unit_of_work):
         # Recent registered user
         response = client.post(
             "/sign_in",
@@ -72,8 +73,9 @@ class TestControllers(BaseTestControllers):
             content_type="multipart/form-data",
             follow_redirects=True,
         )
-        user = repository.get_username("test_user")
+        with unit_of_work as uow:
+            user = uow.repository.get_username(DBTestingData.TEST_USER)
         assert response.status_code == 200  # redirect code
         assert b"<title> Sign In </title>" in response.data
         assert user is not None
-        assert user.username == "test_user"
+        assert user.username == DBTestingData.TEST_USER

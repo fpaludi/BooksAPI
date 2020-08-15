@@ -1,11 +1,15 @@
 from sqlalchemy import inspect
+from sqlalchemy.orm import Session
 from src.models.books import Books
 from src.models.reviews import Reviews
 from src.models.users import Users
 
 
 class Repository:
-    def __init__(self, session):
+    def __init__(self):
+        self._session = None
+
+    def _set_session(self, session: Session):
         self._session = session
 
     # --------------------------------
@@ -17,7 +21,6 @@ class Repository:
     def add_user(self, user):
         new_user = Users(**user)
         self._session.add(new_user)
-        self._session.commit()
 
     def get_user_id(self, id_ref):
         return self._session.query(Users).get(id_ref)
@@ -44,4 +47,3 @@ class Repository:
     def add_review(self, review):
         new_review = Reviews(**review)
         self._session.add(new_review)
-        self._session.commit()

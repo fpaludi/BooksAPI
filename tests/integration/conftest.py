@@ -24,53 +24,70 @@ class BaseTestControllers(ABC):
 
         # "Running"
         test_client = app.test_client()
-        yield test_client
-
-        # Clean testing DB to start clean every run tests
-        self.delete_testing_database()
+        try:
+            yield test_client
+        finally:
+            # Clean testing DB to start clean every run tests
+            self.delete_testing_database()
 
     @pytest.fixture(scope="function")
-    def repository(self):
+    def unit_of_work(self):
         from src.repositories import RepositoryContainer
 
-        repository = RepositoryContainer.repository()
-        return repository
+        uow = RepositoryContainer.uow()
+        return uow
 
     def create_testing_database(self):
         from src.repositories import RepositoryContainer
 
         engine = RepositoryContainer.engine()
-        session = RepositoryContainer.session()
+        session = RepositoryContainer.DEFAULT_SESSIONFACTORY()
         if "_test" not in str(engine.url):
             print("Tests are running over production or development database")
             print(f"Database url: {engine.url}")
             raise (ValueError)
 
+        print()
+        print("*" * 80)
+        print("TEST DB OPERATIONS")
+        print("*" * 80)
         create_tables(engine, session)
-
-        repository = RepositoryContainer.repository()
+        uow = RepositoryContainer.uow()
 
         # Add User
-        new_user = dict(username=DBTestingData.TEST_USER, password=DBTestingData.TEST_PSW)
-        repository.add_user(new_user)
+        with uow:
+            new_user = dict(
+                username=DBTestingData.TEST_USER, password=DBTestingData.TEST_PSW
+            )
+            uow.repository.add_user(new_user)
+            uow.commit()
 
-        # Add Review for User
-        user = repository.get_username(DBTestingData.TEST_USER)
-        book = repository.get_book_by_like("title", DBTestingData.BOOK_TITLE_W_REVIEW)[0]
-        new_review = dict(
-            review_value="1",
-            review_comment="test comment",
-            user_id=user.id,
-            book_id=book.id,
-        )
-        repository.add_review(new_review)
+            # Add Review for User
+            user = uow.repository.get_username(DBTestingData.TEST_USER)
+            book = uow.repository.get_book_by_like(
+                "title", DBTestingData.BOOK_TITLE_W_REVIEW
+            )[0]
+            new_review = dict(
+                review_value="1",
+                review_comment="test comment",
+                user_id=user.id,
+                book_id=book.id,
+            )
+            uow.repository.add_review(new_review)
+            uow.commit()
+        print("-" * 80)
 
     def delete_testing_database(self):
         from src.repositories import RepositoryContainer
 
+        print()
+        print("*" * 80)
+        print("TEST DB OPERATIONS")
+        print("*" * 80)
         engine = RepositoryContainer.engine()
-        session = RepositoryContainer.session()
+        session = RepositoryContainer.DEFAULT_SESSIONFACTORY()
         delete_tables(engine, session)
+        print("-" * 80)
 
     # @classmethod
     # def setup_class(cls):
