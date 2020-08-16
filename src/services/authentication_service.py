@@ -1,7 +1,7 @@
 from flask import g, jsonify
 from flask_httpauth import HTTPBasicAuth
 from src.repositories.unit_of_work import UnitOfWork
-
+from src.repositories import RepositoryContainer
 
 auth = HTTPBasicAuth()
 
@@ -36,21 +36,24 @@ class AuthenticationService:
             return "Username already exists, pick up another.", False
         return "Passwords are not equal. Try again", False
 
-    @auth.verify_password  # type: ignore
-    def api_verify_password(self, username, password):
-        """
-        HttpAuth callback function. Is is used to verify the password
-        for an API call
-        """
-        if username == "":
-            return False
-        with self.uow as uow:
-            user = uow.repository.get_username(username)
-        if not user:
-            return False
-        g.current_user = user
-        return user.validate_pass(password)
 
-    @auth.error_handler  # type: ignore
-    def auth_error(self):
-        return jsonify({"msg": "Invalid Credentials"}), 401
+@auth.verify_password  # type: ignore
+def api_verify_password(username, password):
+    """
+    HttpAuth callback function. Is is used to verify the password
+    for an API call
+    """
+    uow = RepositoryContainer.uow()
+    if username == "":
+        return False
+    with uow:
+        user = uow.repository.get_username(username)
+    if not user:
+        return False
+    g.current_user = user
+    return user.validate_pass(password)
+
+
+@auth.error_handler  # type: ignore
+def auth_error():
+    return jsonify({"msg": "Invalid Credentials"}), 401

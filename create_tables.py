@@ -42,6 +42,6 @@ if __name__ == "__main__":
     from src.repositories import RepositoryContainer
 
     engine = RepositoryContainer.engine()
-    session = RepositoryContainer.session()
+    session = RepositoryContainer.DEFAULT_SESSIONFACTORY()
 
     create_tables(engine, session)

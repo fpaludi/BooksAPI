@@ -4,6 +4,7 @@ from abc import ABC
 from sqlalchemy.orm import sessionmaker, Session
 from src.services.book_service import BookServices
 from src.services.external_api_service import ExternalApiService
+from src.services.authentication_service import AuthenticationService
 from src.repositories.repository import Repository
 from src.repositories.unit_of_work import UnitOfWork
 
@@ -30,9 +31,9 @@ class BaseTestService(ABC):
     def book_service_mock(self):
         return mock.create_autospec(BookServices)
 
-    # @pytest.fixture(scope='function')
-    # def authentication_service_mock(self):
-    #     return mock.create_autospec(AuthenticationService)
+    @pytest.fixture(scope="function")
+    def authentication_service_mock(self):
+        return mock.create_autospec(AuthenticationService)
 
     @pytest.fixture(scope="function")
     def external_api_service_mock(self):
@@ -55,7 +56,14 @@ class BaseTestService(ABC):
         return book_service
 
     @pytest.fixture(scope="function")
-    def external_api_service(self, repository_mock):
+    def authentication_service(self, unit_of_work):
+        # Service
+        authentication_service = AuthenticationService(uow=unit_of_work)
+
+        return authentication_service
+
+    @pytest.fixture(scope="function")
+    def external_api_service(self):
         # Service
         external_api_service = ExternalApiService("URL", "KEY")
 

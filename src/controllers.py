@@ -1,10 +1,10 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from flask_httpauth import HTTPBasicAuth
 from src import login_manager
 from src.forms.forms import BookReviewForm, FilterBookForm, LogInForm, SignInForm
 from src.repositories import RepositoryContainer
 from src.services import ServicesContainer
+from src.services.authentication_service import auth
 from src.services.logger import get_logger
 
 # Create Blueprints
@@ -12,7 +12,6 @@ control = Blueprint("app", __name__, template_folder="templates")
 
 # Create Blueprints
 logger = get_logger(__name__)
-auth = HTTPBasicAuth()
 
 
 @control.route("/", methods=["GET", "POST"])
@@ -82,7 +81,7 @@ def show_book(book_id):
     form = BookReviewForm()
     book = book_service.get_books_by_id(book_id)
     goodread_results = api_service.get_json_from_goodreads(book.isbn)
-    goodread_rating = goodread_results["books"][0]["average_rating"]
+    goodread_rating = goodread_results.json()["books"][0]["average_rating"]
 
     if form.validate_on_submit():
         msg, st = book_service.insert_book_review(
@@ -100,7 +99,7 @@ def show_book(book_id):
 def get_goodread_data(isbn):
     api_service = ServicesContainer.api_service()
     goodread_results = api_service.get_json_from_goodreads(isbn)
-    return jsonify(goodread_results), 200
+    return jsonify(goodread_results.json()), 200
 
 
 @login_manager.user_loader  # type: ignore

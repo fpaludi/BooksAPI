@@ -3,7 +3,8 @@ from src.models.reviews import Reviews
 
 
 class Books:
-    def __init__(self, isbn, title, author, year):
+    def __init__(self, isbn, title, author, year, book_id=None):
+        self.id = book_id
         self.isbn = isbn
         self.title = title
         self.author = author

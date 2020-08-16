@@ -1,3 +1,4 @@
+import base64
 from tests.integration.conftest import BaseTestControllers
 from tests.integration.fake_mock_data import DBTestingData
 
@@ -55,7 +56,7 @@ class TestControllers(BaseTestControllers):
         )
         with unit_of_work as uow:
             user = uow.repository.get_username("new_user")
-        assert response.status_code == 200  # redirect code
+        assert response.status_code == 200
         assert b"<title> Log In </title>" in response.data
         assert user is not None
         assert user.username == "new_user"
@@ -75,7 +76,33 @@ class TestControllers(BaseTestControllers):
         )
         with unit_of_work as uow:
             user = uow.repository.get_username(DBTestingData.TEST_USER)
-        assert response.status_code == 200  # redirect code
+        assert response.status_code == 200
         assert b"<title> Sign In </title>" in response.data
         assert user is not None
         assert user.username == DBTestingData.TEST_USER
+
+    def test_api_get_goodread_data(self, client):
+        username = DBTestingData.TEST_USER
+        password = DBTestingData.TEST_PSW
+        cred_str = f"{username}:{password}".encode("utf-8")
+        credentials = base64.b64encode(bytes(cred_str)).decode("utf-8")
+        response = client.get(
+            "/api/0739328271", headers={"Authorization": "Basic {}".format(credentials)}
+        )
+        assert response.status_code == 200  # redirect code
+
+    def test_api_get_goodread_data_fail(self, client):
+        user_pass_list = [
+            (DBTestingData.TEST_USER, "MMM"),
+            ("", "MMM"),
+            ("UserDontExist", "MMM"),
+        ]
+
+        for username, password in user_pass_list:
+            cred_str = f"{username}:{password}".encode("utf-8")
+            credentials = base64.b64encode(bytes(cred_str)).decode("utf-8")
+            response = client.get(
+                "/api/0739328271",
+                headers={"Authorization": "Basic {}".format(credentials)},
+            )
+            assert response.status_code == 401  # redirect code

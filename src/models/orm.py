@@ -56,7 +56,7 @@ def start_mappers():
         books,
         properties={
             "reviews": relationship(
-                reviews_mapper, backref="books", collection_class=list,
+                reviews_mapper, backref="books", collection_class=list, lazy=False
             )
         },
     )

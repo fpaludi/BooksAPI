@@ -1,7 +1,8 @@
-# from src.models.books import Books
-# from src.models.users import Users
-# from src.models.reviews import Reviews
+from src.models.books import Books
+from src.models.users import Users
 from src.repositories.unit_of_work import UnitOfWork
+
+# from src.models.reviews import Reviews
 
 
 class BookServices:
@@ -24,7 +25,9 @@ class BookServices:
         book = [] if book is None else book
         return book
 
-    def insert_book_review(self, book, user, review_value, review_comment):
+    def insert_book_review(
+        self, book: Books, user: Users, review_value: int, review_comment: str
+    ):
         if book.user_can_insert_review(user.id):
             new_review = dict(
                 review_value=review_value,
